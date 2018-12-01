@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>XkcdFast</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<button style="width: 15vw; height: 15vh;" id="nextxkcd">Random XKCD</button>
+<h3 id="count"></h3>
+<br>
+<!-- <div id="xkcd-img"></div> -->
+<img src="" alt="XKCD Image" id="xkcd-img">   
+<img src="" id="cacher"> 
+</body>
+<style>
+    #cacher {
+        width: 0px;
+    }
+#xkcd-img {
+    width: 80vw;
+    height: 60vh;
+    /* background-repeat: no-repeat; */
+    /* background-size: cover; */
+    object-fit: cover;
+}
+body {
+    background: #eeeeee;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cash/3.0.0-beta.2/cash.min.js"></script>
+<script>
+async function fetchJSON(comic) {
+    const url = `https://xkcd.now.sh/${comic ? comic : ""}`;
+    // console.log("fetching", url);
+    const res = await fetch(url);
+    const json = await res.json();
+    return json;
+
+}
+$(async function() {
+    const mData = await fetchJSON();
+    async function randXKCD() {
+        const n = Math.floor(Math.random() * (mData.num+1));
+        const json = await fetchJSON(n);
+        $("#cacher").attr("src", json.img);
+        return json;
+    }
+    function showXKCD(xkcd) {
+        $("h3#count").text(xkcd.num);
+        // $("#xkcd-img").css("background-image", `url(${xkcd.img})`);
+        $("#xkcd-img").attr("src", xkcd.img);
+    } 
+    let nextXKCD = await randXKCD(); 
+    async function showNextXKCD() {
+        console.log(nextXKCD);
+        if (nextXKCD) {
+            showXKCD(nextXKCD);
+            $("#xkcd-img").one("load", async () => nextXKCD = await randXKCD()~)
+        } else alert("could not cache next xkcd fast enough")
+    }
+    showXKCD(await randXKCD());
+    $("#nextxkcd").on("click", async () => await showNextXKCD())
+});
+</script>
+</html>
