@@ -7,23 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<button style="width: 15vw; height: 15vh;" id="nextxkcd">Random XKCD</button>
-<h3 id="count"></h3>
+<button style="width: 10vw; height: 10vh;" id="nextxkcd">Random XKCD <p style="color: gray;">or press <b>n</b></p></button>
+<h3 id="count" style="display: inline-block"></h3>
 <br>
 <!-- <div id="xkcd-img"></div> -->
-<img src="" alt="XKCD Image" id="xkcd-img">   
+<div id="xkcd-img-container">
+    <img src="" alt="XKCD Image" id="xkcd-img">   
+</div>
 <img src="" id="cacher"> 
 </body>
 <style>
     #cacher {
         width: 0px;
     }
-#xkcd-img {
+#xkcd-img-container {
     width: 80vw;
-    height: 60vh;
+    height: 80vh;
+}
+#xkcd-img {
+    max-width: 100%;
+    max-height: 100%;
+    /* height: auto; */
+    /* width: 80vw; */
+    /* height: 60vh; */
     /* background-repeat: no-repeat; */
     /* background-size: cover; */
-    object-fit: cover;
+    /* object-fit: cover; */
 }
 body {
     background: #eeeeee;
@@ -48,16 +57,17 @@ $(async function() {
         return json;
     }
     function showXKCD(xkcd) {
-        $("h3#count").text(xkcd.num);
+        $("h3#count").text(xkcd.title + " - " + xkcd.num);
         // $("#xkcd-img").css("background-image", `url(${xkcd.img})`);
         $("#xkcd-img").attr("src", xkcd.img);
     } 
     let nextXKCD = await randXKCD(); 
+    $(document).on("keypress", async e => e.key=="n" ?await showNextXKCD() :null);
     async function showNextXKCD() {
         console.log(nextXKCD);
         if (nextXKCD) {
             showXKCD(nextXKCD);
-            $("#xkcd-img").one("load", async () => nextXKCD = await randXKCD()~)
+            $("#xkcd-img").one("load", async () => nextXKCD = await randXKCD())
         } else alert("could not cache next xkcd fast enough")
     }
     showXKCD(await randXKCD());
