@@ -41,7 +41,7 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cash/3.0.0-beta.2/cash.min.js"></script>
 <script>
 async function fetchJSON(comic) {
-    const url = `https://xkcd.now.sh/${comic ? comic : ""}`;
+    const url = `https://xkcd.now.sh/${comic ? comic : ""}`; // This has CORS - normal xkcd.com does NOT
     // console.log("fetching", url);
     const res = await fetch(url);
     const json = await res.json();
